@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des Spécialités</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <h1 class="mb-4">Liste des Spécialités</h1>
+
+  <a class="btn btn-primary mb-3" th:href="@{/specialities/add}">Ajouter une Spécialité</a>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+
+      <th>Nom de la Spécialité</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="speciality : ${specialities}">
+      <td th:text="${speciality.specialty_name}"></td>
+      <td>
+        <a class="btn btn-warning btn-sm" th:href="@{/specialities/edit/{id}(id=${speciality.specialty_id})}">Éditer</a>
+        <a class="btn btn-danger btn-sm" th:href="@{/specialities/delete/{id}(id=${speciality.specialty_id})}"
+           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette spécialité ?');">Supprimer</a>
+        <a class="btn btn-info btn-sm" th:href="@{/specialities/{id}(id=${speciality.specialty_id})}">Détails</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Message de notification si nécessaire -->
+  <div th:if="${#lists.isEmpty(specialities)}" class="alert alert-warning" role="alert">
+    Aucune spécialité trouvée.
+  </div>
+
+</div>
+
+<!-- Scripts Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
