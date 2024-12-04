@@ -26,13 +26,12 @@
     </div>
 
     <div class="mb-3">
-      <label for="specialities" class="form-label">Spécialités:</label>
-      <select id="specialities" class="form-select" th:field="*{specialities}" multiple required> <!-- Allow multiple selection -->
-        <option value="" disabled>Sélectionnez une ou plusieurs spécialités</option>
+      <label for="specialities" class="form-label">Spécialité:</label>
+      <select id="specialities" th:field="*{specialities.speciality_id}">
         <option th:each="speciality : ${specialities}"
-                th:value="${speciality.specialty_id}"
-                th:text="${speciality.specialty_name}"
-                th:selected="${#lists.contains(course.specialities, speciality)}"></option> <!-- Check if speciality is selected -->
+                th:value="${speciality.speciality_id}"
+                th:text="${speciality.speciality_name}"
+                th:selected="${speciality.speciality_id == course.specialities.speciality_id}"></option>
       </select>
     </div>
 
