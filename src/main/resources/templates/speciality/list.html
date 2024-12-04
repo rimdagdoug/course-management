@@ -34,6 +34,10 @@
 
   <a class="btn btn-primary mb-3" th:href="@{/specialities/add}">Ajouter une Spécialité</a>
 
+  <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+  </div>
+
   <table class="table table-striped">
     <thead>
     <tr>
@@ -49,7 +53,6 @@
         <a class="btn btn-warning btn-sm" th:href="@{/specialities/edit/{id}(id=${speciality.getSpeciality_id})}">Éditer</a>
         <a class="btn btn-danger btn-sm" th:href="@{/specialities/delete/{id}(id=${speciality.getSpeciality_id})}"
            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette spécialité ?');">Supprimer</a>
-        <a class="btn btn-info btn-sm" th:href="@{/specialities/{id}(id=${speciality.getSpeciality_id})}">Détails</a>
       </td>
     </tr>
     </tbody>

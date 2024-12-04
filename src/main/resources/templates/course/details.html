@@ -15,13 +15,10 @@
     <span th:text="${course.coefficient}"></span></p>
 
   <p><strong>Description:</strong>
-    <span th:text="${course.specialty.size()}"></span></p>
+    <span th:text="${course.description}"></span></p>
 
-  <p><strong>Spécialités:</strong>
-    <span th:each="speciality, iterStat : ${course.specialty}">
-        <span th:text="${speciality.getSpeciality_name}"></span>
-        <span th:if="${!iterStat.last}">, </span> <!-- Ajoute une virgule si ce n'est pas le dernier -->
-    </span>
+  <p><strong>Spécialité:</strong>
+    <span th:text="${course.specialities.speciality_name}"></span>
   </p>
 
   <a href="#" th:href="@{/course/edit/{id}(id=${course.course_id})}" class='btn btn-warning'>Éditer le Cours</a>

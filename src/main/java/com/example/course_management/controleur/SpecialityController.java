@@ -3,9 +3,11 @@ package com.example.course_management.controleur;
 import com.example.course_management.entities.Speciality;
 import com.example.course_management.service.IServiceSpeciality;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -34,8 +36,12 @@ public class SpecialityController {
     }
 
     @GetMapping("/delete/{id}")
-    public  String dlete(@PathVariable Long id){
-        sp.deleteSpeciality(id);
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            sp.deleteSpeciality(id);
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Impossible de supprimer cette spécialité car elle est utilisée par un ou plusieurs cours.");
+        }
         return "redirect:/specialities";
     }
 

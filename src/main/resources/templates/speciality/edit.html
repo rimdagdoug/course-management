@@ -8,18 +8,16 @@
 <body>
 <div class="container mt-5">
   <h1 class="mb-4">Éditer la Spécialité</h1>
-
   <form th:action="@{/specialities/edit}" th:object="${speciality}" method="post">
     <div class="form-group">
       <label for="specialty_name">Nom de la Spécialité</label>
-      <input type="text" id="specialty_name" th:field="*{getSpeciality_name}" class="form-control" required />
+      <input type="text" id="specialty_name" th:field="*{speciality_name}" class="form-control" required />
     </div>
-    <input type="hidden" th:field="*{getSpeciality_id}" />
+    <input type="hidden" th:field="*{speciality_id}" />
     <button type="submit" class="btn btn-primary mt-3">Mettre à jour</button>
     <a class="btn btn-secondary mt-3" th:href="@{/specialities}">Annuler</a>
   </form>
 </div>
-
 <!-- Scripts Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
