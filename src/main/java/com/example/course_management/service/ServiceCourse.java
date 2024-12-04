@@ -15,7 +15,6 @@ public class ServiceCourse implements IServiceCourse{
     @Override
     public void addCourse(Course c) {
         courseRepository.save(c);
-
     }
 
     @Override
@@ -30,13 +29,13 @@ public class ServiceCourse implements IServiceCourse{
 
     @Override
     public Course getCourse(Long id) {
-        return courseRepository.findById(id).get();
+        Course resultat =    courseRepository.findCourseWithSpecialities(id);
+        return resultat;
     }
 
     @Override
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
-
     }
 
     @Override

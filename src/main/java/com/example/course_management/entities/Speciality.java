@@ -7,18 +7,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-
 public class Speciality {
 
-    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long specialty_id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long speciality_id;
+
     @Column(unique = true)
-    public String specialty_name;
-    @OneToMany(mappedBy = "speciality", cascade = CascadeType.ALL)
+    private String speciality_name;
+
+    @OneToMany(mappedBy = "specialities")
     private List<Course> courses;
 }

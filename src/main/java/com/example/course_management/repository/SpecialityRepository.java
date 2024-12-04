@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SpecialityRepository extends JpaRepository<Speciality , Long> {
-    @Query("select s from Speciality s where s.specialty_name like  %:x%")
+    @Query("select s from Speciality s where s.speciality_name like  %:x%")
     public List<Speciality> getSpecialityByMC(@Param("x") String mc);
 }
