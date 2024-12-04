@@ -12,9 +12,9 @@
   <form th:action="@{/specialities/edit}" th:object="${speciality}" method="post">
     <div class="form-group">
       <label for="specialty_name">Nom de la Spécialité</label>
-      <input type="text" id="specialty_name" th:field="*{specialty_name}" class="form-control" required />
+      <input type="text" id="specialty_name" th:field="*{getSpeciality_name}" class="form-control" required />
     </div>
-    <input type="hidden" th:field="*{specialty_id}" />
+    <input type="hidden" th:field="*{getSpeciality_id}" />
     <button type="submit" class="btn btn-primary mt-3">Mettre à jour</button>
     <a class="btn btn-secondary mt-3" th:href="@{/specialities}">Annuler</a>
   </form>

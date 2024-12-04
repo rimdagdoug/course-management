@@ -6,23 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-public class Course {
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long course_id;
+    private Long id;
 
     private String name;
-    private double coefficient;
-    private String description;
+    @Column(unique = true)
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "speciality_id")
-    private Speciality specialities;
+    private String phoneNumber;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<Speciality> specialities;
+
 }
