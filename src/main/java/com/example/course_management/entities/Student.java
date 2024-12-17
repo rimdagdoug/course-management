@@ -23,6 +23,7 @@ public class Student {
     private String email;
 
     private String phoneNumber;
+    private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<Speciality> specialities;
