@@ -25,13 +25,13 @@ public class CourseController {
         return "course/list";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public String getCourseDetails(@PathVariable Long id, Model model) {
         Course course = ce.getCourse(id);
         model.addAttribute("course", course);
         return "course/details";
     }
-    @GetMapping("/add")
+    @GetMapping("/admin/add")
     public String showAddCourseForm(Model model) {
         model.addAttribute("course", new Course()); // Initialize a new Course object
         List<Speciality> specialities = sp.findAll();
@@ -39,13 +39,13 @@ public class CourseController {
         return "course/add"; // Return to the add course template
     }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     public String addCourse(@ModelAttribute Course course) {
         ce.addCourse(course);
         return "redirect:/course";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/admin/edit/{id}")
     public String showEditCourseForm(@PathVariable Long id, Model model) {
         Course course = ce.getCourse(id);
         List<Speciality> specialities = sp.findAll();
@@ -54,14 +54,14 @@ public class CourseController {
         return "course/edit";
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/admin/edit/{id}")
     public String updateCourse(@PathVariable Long id, @ModelAttribute Course course) {
         course.setCourse_id(id);
         ce.updateCourse(course);
         return "redirect:/course";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/admin/delete/{id}")
     public String deleteCourse(@PathVariable Long id) {
         ce.deleteCourse(id); // Assume this method exists in IServiceCourse
         return "redirect:/course";

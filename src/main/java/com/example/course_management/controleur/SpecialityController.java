@@ -16,45 +16,45 @@ import java.util.List;
 @RequestMapping("/specialities")
 public class SpecialityController {
     IServiceSpeciality sp;
-    @GetMapping
+    @GetMapping("/user/home")
     public String getAllSpecialities(Model model) {
         List<Speciality> specialities = sp.getAllSpeciality();
         model.addAttribute("specialities", specialities);
         return "speciality/list";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/admin/add")
     public String showAddSpecialityForm(Model model) {
         model.addAttribute("speciality", new Speciality());
         return "speciality/add";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     public String addSpeciality(@ModelAttribute Speciality speciality) {
         sp.addSpeciality(speciality);
-        return "redirect:/specialities";
+        return "redirect:/specialities/user/home";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/admin/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             sp.deleteSpeciality(id);
         } catch (DataIntegrityViolationException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Impossible de supprimer cette spécialité car elle est utilisée par un ou plusieurs cours.");
         }
-        return "redirect:/specialities";
+        return "redirect:/specialities/user/home";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/admin/edit/{id}")
     public String showEditSpecialityForm(@PathVariable Long id, Model model) {
         Speciality speciality = sp.getSpeciality(id);
         model.addAttribute("speciality", speciality);
         return "speciality/edit";
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/admin/edit")
     public String updateSpeciality(@ModelAttribute Speciality speciality) {
         sp.updateSpeciality(speciality);
-        return "redirect:/specialities";
+        return "redirect:/specialities/user/home";
     }
 }

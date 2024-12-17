@@ -16,7 +16,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/specialities}">Spécialités</a>
+          <a class="nav-link" th:href="@{/specialities/user/home}">Spécialités</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/course}">Cours</a>
@@ -25,6 +25,13 @@
           <a class="nav-link" th:href="@{/students}">Étudiants</a>
         </li>
       </ul>
+      <ul>
+        <h3 class="text-success" th:text="${#authentication.name}"></h3>
+      </ul>
+      <ul> <form method="post" th:action="@{/logout}">
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form></ul>
+
     </div>
   </div>
 </nav>
@@ -32,7 +39,7 @@
 <div class="container mt-5">
   <h1 class="mb-4">Liste des Cours</h1>
 
-  <a class="btn btn-primary mb-3" th:href="@{/course/add}">Ajouter un Cours</a>
+  <a class="btn btn-primary mb-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/course/admin/add}">Ajouter un Cours</a>
 
   <table class="table table-striped">
     <thead>
@@ -56,12 +63,14 @@
         <span th:if="${!iterStat.last}">, </span> <!-- Ajoute une virgule si ce n'est pas le dernier -->
     </span>
       </td>
+
       <td>
-        <a class="btn btn-warning btn-sm" th:href="@{/course/edit/{id}(id=${course.course_id})}">Éditer</a>
-        <a class="btn btn-danger btn-sm" th:href="@{/course/delete/{id}(id=${course.course_id})}"
+        <a class="btn btn-warning btn-sm" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/course/admin/edit/{id}(id=${course.course_id})}">Éditer</a>
+        <a class="btn btn-danger btn-sm" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/course/admin/delete/{id}(id=${course.course_id})}"
            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">Supprimer</a>
-        <a class="btn btn-info btn-sm" th:href="@{/course/{id}(id=${course.course_id})}">Détails</a>
+        <a class="btn btn-info btn-sm" th:href="@{/course/user/{id}(id=${course.course_id})}">Détails</a>
       </td>
+
     </tr>
     </tbody>
   </table>

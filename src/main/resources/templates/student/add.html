@@ -16,7 +16,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/specialities}">Spécialités</a>
+          <a class="nav-link" th:href="@{/specialities/user/home}">Spécialités</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/course}">Cours</a>
@@ -32,7 +32,7 @@
 
 <div class="container mt-5">
   <h1 class="text-center">Ajouter un étudiant</h1>
-  <form action="#" th:action="@{/students/add}" th:object="${student}" method="post" class="mt-4">
+  <form action="#" th:action="@{/students/admin/add}" th:object="${student}" method="post" class="mt-4">
     <div class="form-group">
       <label for="name">Nom:</label>
       <input type="text" id="name" th:field="*{name}" class="form-control" required/>

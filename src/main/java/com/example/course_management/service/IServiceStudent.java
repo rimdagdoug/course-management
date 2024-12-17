@@ -2,7 +2,8 @@ package com.example.course_management.service;
 
 import com.example.course_management.entities.Speciality;
 import com.example.course_management.entities.Student;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface IServiceStudent {
@@ -11,5 +12,6 @@ public interface IServiceStudent {
     public Student getStudentById(Long id); // New method
     public void updateStudent(Long id, Student student); // New method
     public void deleteStudent(Long id); // New method
+
 
 }

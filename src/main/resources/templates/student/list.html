@@ -16,7 +16,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/specialities}">Spécialités</a>
+          <a class="nav-link" th:href="@{/specialities/user/home}">Spécialités</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/course}">Cours</a>
@@ -25,6 +25,13 @@
           <a class="nav-link" th:href="@{/students}">Étudiants</a>
         </li>
       </ul>
+      <ul>
+        <h3 class="text-success" th:text="${#authentication.name}"></h3>
+      </ul>
+      <ul> <form method="post" th:action="@{/logout}">
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form></ul>
+
     </div>
   </div>
 </nav>
@@ -32,7 +39,7 @@
 <div class="container mt-5">
   <h1 class="mb-4">Liste des Étudiants</h1>
 
-  <a class="btn btn-primary mb-3" th:href="@{/students/add}">Ajouter un Étudiant</a>
+  <a class="btn btn-primary mb-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/students/admin/add}">Ajouter un Étudiant</a>
 
   <table class="table table-striped">
     <thead>
@@ -41,7 +48,7 @@
       <th>Email</th>
       <th>Numéro de Téléphone</th>
       <th>Spécialité</th> <!-- Affichage de la spécialité -->
-      <th>Actions</th>
+      <th th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -54,11 +61,11 @@
       <td th:text="${student.specialities[0].speciality_name}"></td>
 
       <!-- Actions pour chaque étudiant -->
-      <td>
-        <a class="btn btn-warning btn-sm" th:href="@{/students/edit/{id}(id=${student.id})}">Éditer</a>
-        <a class="btn btn-danger btn-sm" th:href="@{/students/delete/{id}(id=${student.id})}"
+      <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <a class="btn btn-warning btn-sm" th:href="@{/students/admin/edit/{id}(id=${student.id})}">Éditer</a>
+        <a class="btn btn-danger btn-sm" th:href="@{/students/admin/delete/{id}(id=${student.id})}"
            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?');">Supprimer</a>
-        <a class="btn btn-info btn-sm" th:href="@{/students/{id}(id=${student.id})}">Détails</a>
+        <a class="btn btn-info btn-sm" th:href="@{/students/admin/{id}(id=${student.id})}">Détails</a>
       </td>
     </tr>
     </tbody>
