@@ -16,7 +16,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/specialities}">Spécialités</a>
+          <a class="nav-link" th:href="@{/specialities/user/home}">Spécialités</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/course}">Cours</a>
@@ -25,6 +25,13 @@
           <a class="nav-link" th:href="@{/students}">Étudiants</a>
         </li>
       </ul>
+      <ul>
+        <h3 class="text-success" th:text="${#authentication.name}"></h3>
+      </ul>
+      <ul> <form method="post" th:action="@{/logout}">
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form></ul>
+
     </div>
   </div>
 </nav>
@@ -32,7 +39,7 @@
 <div class="container mt-5">
   <h1 class="mb-4">Liste des Spécialités</h1>
 
-  <a class="btn btn-primary mb-3" th:href="@{/specialities/add}">Ajouter une Spécialité</a>
+  <a class="btn btn-primary mb-3" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/specialities/admin/add}">Ajouter une Spécialité</a>
 
   <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
     <span th:text="${errorMessage}"></span>
@@ -43,15 +50,15 @@
     <tr>
 
       <th>Nom de la Spécialité</th>
-      <th>Actions</th>
+      <th th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="speciality : ${specialities}">
       <td th:text="${speciality.getSpeciality_name}"></td>
-      <td>
-        <a class="btn btn-warning btn-sm" th:href="@{/specialities/edit/{id}(id=${speciality.getSpeciality_id})}">Éditer</a>
-        <a class="btn btn-danger btn-sm" th:href="@{/specialities/delete/{id}(id=${speciality.getSpeciality_id})}"
+      <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <a class="btn btn-warning btn-sm" th:href="@{/specialities/admin/edit/{id}(id=${speciality.getSpeciality_id})}">Modifier</a>
+        <a class="btn btn-danger btn-sm" th:href="@{/specialities/admin/delete/{id}(id=${speciality.getSpeciality_id})}"
            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette spécialité ?');">Supprimer</a>
       </td>
     </tr>

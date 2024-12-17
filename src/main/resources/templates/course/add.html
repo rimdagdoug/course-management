@@ -9,7 +9,7 @@
 <body>
 <div class="container mt-5">
   <h1 class="text-center">Ajouter un Cours</h1>
-  <form action="#" th:action="@{/course/add}" th:object="${course}" method="post" class="mt-4">
+  <form action="#" th:action="@{/course/admin/add}" th:object="${course}" method="post" class="mt-4">
     <div class="form-group">
       <label for="name">Nom du Cours:</label>
       <input type="text" id="name" th:field="*{name}" class="form-control" required/>

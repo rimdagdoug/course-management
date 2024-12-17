@@ -27,7 +27,7 @@ public class StudentController {
         return "student/list";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/admin/add")
     public String showAddCourseForm(Model model) {
         model.addAttribute("student", new Student());
         List<Speciality> specialities = specialityRepository.findAll();
@@ -35,13 +35,13 @@ public class StudentController {
         return "student/add";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     public String addStudent(@ModelAttribute Student student) {
         serviceStudent.addStudent(student);
         return "redirect:/students";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/admin/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Student student = serviceStudent.getStudentById(id);
 
@@ -71,19 +71,19 @@ public class StudentController {
     }
 
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/admin/edit/{id}")
     public String editStudent(@PathVariable Long id, @ModelAttribute Student student) {
         serviceStudent.updateStudent(id, student);
         return "redirect:/students";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/admin/delete/{id}")
     public String deleteStudent(@PathVariable Long id) {
         serviceStudent.deleteStudent(id);
         return "redirect:/students";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     public String viewDetails(@PathVariable Long id, Model model) {
         Student student = serviceStudent.getStudentById(id);
         model.addAttribute("student", student);
