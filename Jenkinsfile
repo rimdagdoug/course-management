@@ -7,8 +7,8 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        IMAGE_NAME_SERVER = '[username]/mern-server'
-        IMAGE_NAME_CLIENT = '[username]/mern-client'
+        IMAGE_NAME_SERVER = '[username]/mern-server:${GIT_COMMIT}'
+        IMAGE_NAME_CLIENT = '[username]/mern-client:${GIT_COMMIT}'
     }
 
     stages {
@@ -69,9 +69,30 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                        dockerImageServer.push()
-                        dockerImageClient.push()
+                    // Vérifie la version de Docker
+                    sh 'docker --version'
+
+                    // Donne des informations détaillées sur Docker
+                    sh 'docker info'
+
+                    // Liste les conteneurs Docker existants (utile pour voir s'il y a des erreurs)
+                    sh 'docker ps -a'
+
+                    // Essaye de te connecter à DockerHub pour vérifier l'authentification
+                    sh """
+                    echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
+                    """
+
+                    // Push des images vers DockerHub
+                    try {
+                        docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
+                            dockerImageServer.push()
+                            dockerImageClient.push()
+                        }
+                    } catch (e) {
+                        currentBuild.result = 'FAILURE'
+                        echo "Erreur lors du push vers DockerHub : ${e.message}"
+                        throw e
                     }
                 }
             }
