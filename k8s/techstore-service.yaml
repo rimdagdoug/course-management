@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: techstore-service
+  namespace: course-management-app
+spec:
+  type: NodePort  # Changez en LoadBalancer si vous voulez l'exposer à l'extérieur du cluster.
+  selector:
+    app: techstore
+  ports:
+    - port: 9696     # Port exposé par le service.
+      targetPort: 9696 # Port sur lequel le conteneur écoute.
+      nodePort: 30002

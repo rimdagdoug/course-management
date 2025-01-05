@@ -2,13 +2,17 @@ pipeline {
     agent any
 
     triggers {
-        pollSCM('H/5 * * * *')
+        pollSCM('H/5 * * * *') // Polling SCM every 5 minutes
     }
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub') // Assurez-vous que l'ID de credential est correct
-        IMAGE_NAME_SERVER = '[username]/mern-server:${GIT_COMMIT}'
-        IMAGE_NAME_CLIENT = '[username]/mern-client:${GIT_COMMIT}'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')  // ID of the secret text (PAT) credential
+        DOCKER_USERNAME = 'rimdagdoug'
+        IMAGE_NAME = "${DOCKER_USERNAME}/course-project"  // Image name to push to Docker Hub
+    }
+
+    tools {
+        maven 'Maven 3' // Maven tool configured in Jenkins
     }
 
     stages {
@@ -16,89 +20,70 @@ pipeline {
             steps {
                 git branch: 'main',
                     url: 'git@github.com:rimdagdoug/course-management.git',
-                    credentialsId: 'Github'
+                    credentialsId: 'Github' // GitHub credential ID for access to repo
             }
         }
 
-        stage('Build Server Image') {
+        stage('Build Jar') {
             steps {
-                dir('server') {
-                    script {
-                        dockerImageServer = docker.build("${IMAGE_NAME_SERVER}")
+                script {
+                    // Compilation with Maven to generate the JAR file
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Check Jar') {
+            steps {
+                script {
+                    // Verifying the presence of the JAR file
+                    sh 'ls -l target/'  // Listing files in the target directory
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Verifying the existence of Dockerfile and building Docker image
+                    def dockerfilePath = 'Dockerfile'
+                    if (fileExists(dockerfilePath)) {
+                        dockerImage = docker.build("${IMAGE_NAME}", "-f ${dockerfilePath} .")
+                    } else {
+                        error "Dockerfile not found in the project root directory"
                     }
                 }
             }
         }
 
-        stage('Build Client Image') {
+        stage('Scan Docker Image') {
             steps {
-                dir('client') {
-                    script {
-                        dockerImageClient = docker.build("${IMAGE_NAME_CLIENT}")
+                script {
+                    // Scan de l'image Docker avec Trivy
+                    def scanResult = sh(script: """
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
+                        aquasec/trivy:latest image --exit-code 1 \\
+                        --severity LOW,MEDIUM,HIGH,CRITICAL \\
+			--timeout 60m \\
+                        ${IMAGE_NAME}
+                    """, returnStatus: true)
+
+                    if (scanResult != 0) {
+                        error "Vulnerability scan failed with exit code ${scanResult}"
+                    } else {
+                        echo "Vulnerability scan completed successfully."
                     }
                 }
             }
         }
 
-        stage('Scan Server Image') {
+        stage('Push Image to Docker Hub') {
             steps {
                 script {
-                    sh """
-                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
-                    aquasec/trivy:latest image --exit-code 0 \\
-                    --severity LOW,MEDIUM,HIGH,CRITICAL \\
-                    ${IMAGE_NAME_SERVER}
-                    """
-                }
-            }
-        }
-
-        stage('Scan Client Image') {
-            steps {
-                script {
-                    sh """
-                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
-                    aquasec/trivy:latest image --exit-code 0 \\
-                    --severity LOW,MEDIUM,HIGH,CRITICAL \\
-                    ${IMAGE_NAME_CLIENT}
-                    """
-                }
-            }
-        }
-
-        stage('Test DockerHub Login') {
-            steps {
-                script {
-                    // Tentative de connexion à DockerHub pour vérifier l'authentification
-                    try {
-                        echo "Tentative de connexion à DockerHub"
-                        sh """
-                        echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin
-                        """
-                        echo "Connexion réussie à DockerHub."
-                    } catch (e) {
-                        currentBuild.result = 'FAILURE'
-                        echo "Erreur lors de la connexion à DockerHub : ${e.message}"
-                        throw e
-                    }
-                }
-            }
-        }
-
-        stage('Push Images to Docker Hub') {
-            steps {
-                script {
-                    echo "Vérification de la connexion DockerHub avant le push..."
-                    try {
-                        // Tentative de push avec des logs détaillés
-                        echo "Poussée de l'image serveur vers DockerHub : ${IMAGE_NAME_SERVER}"
-                        dockerImageServer.push()
-                        echo "Poussée de l'image client vers DockerHub : ${IMAGE_NAME_CLIENT}"
-                        dockerImageClient.push()
-                    } catch (e) {
-                        currentBuild.result = 'FAILURE'
-                        echo "Erreur lors du push vers DockerHub : ${e.message}"
-                        throw e
+                    // Using Docker Hub credentials (PAT) to authenticate and push the image
+                    withDockerRegistry([ credentialsId: 'dockerhub' ]) {
+                        echo "Pushing image ${IMAGE_NAME} to Docker Hub..."
+                        dockerImage.push() // Pushing the image
                     }
                 }
             }

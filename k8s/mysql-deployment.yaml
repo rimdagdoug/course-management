@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqldb-deployment
+  namespace: course-management-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+        - name: mysqldb
+          image: mysql:lts
+          env:
+            - name: MYSQL_DATABASE
+              value: "course"
+            - name: MYSQL_USER
+              value: "course_user"
+            - name: MYSQL_PASSWORD
+              value: "abaB7j8JcfeRKVDo2MmRmAprS6PWB7LneIpbHpMsWic="
+            - name: MYSQL_ROOT_PASSWORD
+              value: "dVLLDdGJYVIejSctGPw1qt8IjzYvIJ0ipFYjt8sSfQQ="
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-data
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc  # Vous devez créer ce PVC séparément pour la persistance des données.

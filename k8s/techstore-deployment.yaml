@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: techstore-deployment
+  namespace: course-management-app
+spec:
+  replicas: 2  # Vous pouvez ajuster le nombre de réplicas selon vos besoins.
+  selector:
+    matchLabels:
+      app: techstore
+  template:
+    metadata:
+      labels:
+        app: techstore
+    spec:
+      containers:
+        - name: techstore-container
+          image: rimdagdoug/course-project
+          ports:
+            - containerPort: 9696  # Port sur lequel l'application écoute.
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "dev"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysqldb-service:3306/course"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "course_user"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "abaB7j8JcfeRKVDo2MmRmAprS6PWB7LneIpbHpMsWic="
+
