@@ -19,7 +19,6 @@ public class AuthController {
 
     @GetMapping("/erreurPage")
     public String erreurPage(Model model) {
-        return "erreurPage"; // This should correspond to erreurPage.html
-    }
+        return "erreurPage"; }
 
 }
